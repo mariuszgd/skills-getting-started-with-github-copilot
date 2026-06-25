@@ -1,4 +1,4 @@
-// Mergington High School - Extracurricular Activities App
+// Mergington High School - Extracurricular Activities App v2
 document.addEventListener("DOMContentLoaded", () => {
   const activitiesList = document.getElementById("activities-list");
   const activitySelect = document.getElementById("activity");
