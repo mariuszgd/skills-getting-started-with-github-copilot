@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const spotsLeft = details.max_participants - details.participants.length;
 
         const participantsHTML = (details.participants && details.participants.length)
-          ? `<ul class="participants-list">${details.participants.map(p => `<li>${p}</li>`).join("")}</ul>`
+          ? `<ul class="participants-list">${details.participants.map(p => `<li><span class="participant-email">${p}</span><button class="delete-participant" data-activity="${name}" data-email="${p}" aria-label="Remove ${p}">✖</button></li>`).join("")}</ul>`
           : '<p class="no-participants">No participants yet</p>';
 
         activityCard.innerHTML = `
@@ -102,4 +102,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize app
   fetchActivities();
+
+  // Handle participant delete (delegated)
+  activitiesList.addEventListener('click', async (e) => {
+    const target = e.target;
+    if (!target || !target.classList.contains('delete-participant')) return;
+
+    const email = target.dataset.email;
+    const activity = target.dataset.activity;
+    if (!email || !activity) return;
+
+    if (!confirm(`Remove ${email} from ${activity}?`)) return;
+
+    target.disabled = true;
+    try {
+      const res = await fetch(`/activities/${encodeURIComponent(activity)}/participants?email=${encodeURIComponent(email)}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (res.ok) {
+        messageDiv.textContent = json.message || `Removed ${email}`;
+        messageDiv.className = 'success';
+        messageDiv.classList.remove('hidden');
+        await fetchActivities();
+      } else {
+        messageDiv.textContent = json.detail || 'Failed to remove participant';
+        messageDiv.className = 'error';
+        messageDiv.classList.remove('hidden');
+      }
+      setTimeout(() => messageDiv.classList.add('hidden'), 5000);
+    } catch (err) {
+      console.error('Error removing participant:', err);
+      messageDiv.textContent = 'Error removing participant';
+      messageDiv.className = 'error';
+      messageDiv.classList.remove('hidden');
+    } finally {
+      target.disabled = false;
+    }
+  });
 });
