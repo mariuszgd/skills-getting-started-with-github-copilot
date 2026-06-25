@@ -146,14 +146,34 @@ button:hover {
   color: #1a237e;
 }
 .participants-list {
-  list-style: disc;
-  margin-left: 18px;
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
   margin-top: 6px;
 }
 .participants-list li {
   font-size: 14px;
   color: #444;
-  padding: 3px 0;
+  padding: 6px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.participant-email {
+  color: #444;
+  overflow-wrap: anywhere;
+}
+.delete-participant {
+  background: transparent;
+  border: none;
+  color: #c62828;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+.delete-participant:hover {
+  background: rgba(198,40,40,0.08);
 }
 .no-participants {
   font-style: italic;
